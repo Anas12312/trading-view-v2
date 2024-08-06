@@ -16,6 +16,7 @@ const runIndcator = async (page, ticker, mode) => {
     // Change Ticker Name
 
     async function changeTicker(stockName) {
+        console.log(page.isClosed())
         try {
             await page.waitForSelector('#header-toolbar-symbol-search')
             const searchBtn = await page.$('#header-toolbar-symbol-search')
@@ -31,6 +32,7 @@ const runIndcator = async (page, ticker, mode) => {
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)')
             // console.log("changed ticker name")
         } catch (e) {
+            console.log(e)
             console.log("failed to change ticker name, trying again...")
             // return await changeTicker(stockName)
         }

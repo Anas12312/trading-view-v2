@@ -8,13 +8,14 @@ const getCookies = require("./puppeteer/getCookies")
 const addAllIndicators = require("./puppeteer/addIndicators")
 const spreadTasks = require("./utils/spreadTasks")
 const os = require('os')
+const chalk = require("chalk")
 async function main() {
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
     // const tickers = await getAllTickers()
     const cpuCount = os.cpus().length;
-    const noOfBrowsers = Math.floor(cpuCount / 3)
+    const noOfBrowsers = 2
     const tickers = [
         {
             ticker: "AAPL",
@@ -30,7 +31,103 @@ async function main() {
         },
         {
             ticker: "F",
-            status: 2
+            status: 1
+        },
+        {
+            ticker: "DAX",
+            status: 1
+        },
+        {
+            ticker: "BX1",
+            status: 1
+        },
+        {
+            ticker: "IB1",
+            status: 1
+        },
+        {
+            ticker: "AMZN",
+            status: 1
+        },
+        {
+            ticker: "WEED",
+            status: 1
+        },
+        {
+            ticker: "MSFT",
+            status: 1
+        },
+        {
+            ticker: "2330",
+            status: 1
+        },
+        {
+            ticker: "INTC",
+            status: 1
+        },
+        {
+            ticker: "AAPL",
+            status: 1
+        },
+        {
+            ticker: "TSLA",
+            status: 1
+        },
+        {
+            ticker: "NVDA",
+            status: 1
+        },
+        {
+            ticker: "F",
+            status: 1
+        },
+        {
+            ticker: "DAX",
+            status: 1
+        },
+        {
+            ticker: "BX1",
+            status: 1
+        },
+        {
+            ticker: "IB1",
+            status: 1
+        },
+        {
+            ticker: "AMZN",
+            status: 1
+        },
+        {
+            ticker: "WEED",
+            status: 1
+        },
+        {
+            ticker: "MSFT",
+            status: 1
+        },
+        {
+            ticker: "2330",
+            status: 1
+        },
+        {
+            ticker: "INTC",
+            status: 1
+        },
+        {
+            ticker: "AAPL",
+            status: 1
+        },
+        {
+            ticker: "TSLA",
+            status: 1
+        },
+        {
+            ticker: "NVDA",
+            status: 1
+        },
+        {
+            ticker: "F",
+            status: 1
         },
         {
             ticker: "DAX",
@@ -66,6 +163,9 @@ async function main() {
         },
     ]
     const queues = spreadTasks(tickers, noOfBrowsers)
+    console.log(queues)
+    console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(queues.length) + " CORES")
+    console.log(chalk.green("[TICKERS PER CORE]: ") + chalk.yellow(Math.ceil(tickers.length / queues.length)))
     // console.log(queues)
     // getCookies()
     // 2- Run indicator creation script (TickerName, Mode)

@@ -5,6 +5,12 @@ const fs = require('fs');
 const chalk = require('chalk');
 const { findFilesByTicker, getMostRecentFile } = require('../utils/extractTickerName');
 const { processCSV } = require('../csv');
+function delay(time) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, time)
+    });
+}
+
 async function init(noOfBrowsers) {
 
     const cluster = await Cluster.launch({
@@ -23,7 +29,8 @@ async function init(noOfBrowsers) {
         await page.goto("https://www.tradingview.com/chart/", {
             waitUntil: "domcontentloaded"
         })
-        let pagee = page
+        
+        // let pagee = page
         for (let ticker of data) {
             if (!ticker.ticker) continue
             try {
@@ -38,11 +45,11 @@ async function init(noOfBrowsers) {
                 // ticker.status == 0 && await updateItem(ticker.ticker, 2)
             } catch (e) {
                 console.log(e)
-                pagee = await (page.browser().newPage())
-                continue
+                // await (page.browser().newPage())
             }
+            await delay(250)
         }
-        pagee.close()
+        // page.close()
     });
     return cluster
 }
