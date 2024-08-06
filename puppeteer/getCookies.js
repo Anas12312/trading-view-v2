@@ -15,7 +15,8 @@ const getCookies = async () => {
 
     const page = await browser.newPage()
     await page.goto("https://www.tradingview.com/chart/", {
-        waitUntil: "domcontentloaded"
+        waitUntil: "domcontentloaded",
+        timeout: 50000
     })
     fs.writeFileSync('cookies.json', JSON.stringify(await page.cookies()))
 }

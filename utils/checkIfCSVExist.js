@@ -1,0 +1,3 @@
+async function checkIfCSVEist(stockName) {
+    
+}

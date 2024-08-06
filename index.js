@@ -10,161 +10,69 @@ const spreadTasks = require("./utils/spreadTasks")
 const os = require('os')
 const chalk = require("chalk")
 async function main() {
+    const startTime = new Date()
+
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
-    // const tickers = await getAllTickers()
+    const tickers = await getAllTickers()
     const cpuCount = os.cpus().length;
-    const noOfBrowsers = 2
-    const tickers = [
-        {
-            ticker: "AAPL",
-            status: 1
-        },
-        {
-            ticker: "TSLA",
-            status: 1
-        },
-        {
-            ticker: "NVDA",
-            status: 1
-        },
-        {
-            ticker: "F",
-            status: 1
-        },
-        {
-            ticker: "DAX",
-            status: 1
-        },
-        {
-            ticker: "BX1",
-            status: 1
-        },
-        {
-            ticker: "IB1",
-            status: 1
-        },
-        {
-            ticker: "AMZN",
-            status: 1
-        },
-        {
-            ticker: "WEED",
-            status: 1
-        },
-        {
-            ticker: "MSFT",
-            status: 1
-        },
-        {
-            ticker: "2330",
-            status: 1
-        },
-        {
-            ticker: "INTC",
-            status: 1
-        },
-        {
-            ticker: "AAPL",
-            status: 1
-        },
-        {
-            ticker: "TSLA",
-            status: 1
-        },
-        {
-            ticker: "NVDA",
-            status: 1
-        },
-        {
-            ticker: "F",
-            status: 1
-        },
-        {
-            ticker: "DAX",
-            status: 1
-        },
-        {
-            ticker: "BX1",
-            status: 1
-        },
-        {
-            ticker: "IB1",
-            status: 1
-        },
-        {
-            ticker: "AMZN",
-            status: 1
-        },
-        {
-            ticker: "WEED",
-            status: 1
-        },
-        {
-            ticker: "MSFT",
-            status: 1
-        },
-        {
-            ticker: "2330",
-            status: 1
-        },
-        {
-            ticker: "INTC",
-            status: 1
-        },
-        {
-            ticker: "AAPL",
-            status: 1
-        },
-        {
-            ticker: "TSLA",
-            status: 1
-        },
-        {
-            ticker: "NVDA",
-            status: 1
-        },
-        {
-            ticker: "F",
-            status: 1
-        },
-        {
-            ticker: "DAX",
-            status: 1
-        },
-        {
-            ticker: "BX1",
-            status: 1
-        },
-        {
-            ticker: "IB1",
-            status: 1
-        },
-        {
-            ticker: "AMZN",
-            status: 1
-        },
-        {
-            ticker: "WEED",
-            status: 1
-        },
-        {
-            ticker: "MSFT",
-            status: 1
-        },
-        {
-            ticker: "2330",
-            status: 1
-        },
-        {
-            ticker: "INTC",
-            status: 1
-        },
-    ]
-    const queues = spreadTasks(tickers, noOfBrowsers)
-    console.log(queues)
-    console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(queues.length) + " CORES")
+    console.log(cpuCount)
+    const noOfBrowsers = Math.floor(cpuCount * 0.6)
+    const noOfTickersPerChunks = 4
+    // const tickers = [
+    //     {
+    //         ticker: "AAPL",
+    //         status: 0
+    //     },
+    // //     {
+    // //         ticker: "TSLA",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "NVDA",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "F",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "DAX",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "BX1",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "IB1",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "AMZN",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "WEED",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "MSFT",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "2330",
+    // //         status: 0
+    // //     },
+    // //     {
+    // //         ticker: "INTC",
+    // //         status: 0
+    // //     },
+    // ]
+    const queues = spreadTasks(tickers, tickers.length / noOfTickersPerChunks)
+    // console.log(queues)
+    console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")
     console.log(chalk.green("[TICKERS PER CORE]: ") + chalk.yellow(Math.ceil(tickers.length / queues.length)))
     // console.log(queues)
     // getCookies()
@@ -172,7 +80,10 @@ async function main() {
     // 3- Parse CSV -> Store outcome in dynamoDB
     const cluster = await init(noOfBrowsers)
     queues.forEach((queue) => {
-        cluster.queue(queue)
+        cluster.queue({
+            queue,
+            startTime
+        })
 
         
     })

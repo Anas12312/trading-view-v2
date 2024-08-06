@@ -13,7 +13,8 @@ async function update(params) {
 }
 async function getAllTickers(status) {
     const params = {
-        TableName: getTableName(),
+        // TableName: getTableName(),
+        TableName: 'tvtable_20240805',
         FilterExpression: '#status IN (:statusValue0, :statusValue1)',
         ExpressionAttributeNames: {
             '#status': 'status'
@@ -35,7 +36,8 @@ async function getAllTickers(status) {
 }
 // Function to update an item in the DynamoDB table
 async function updateItem(ticker, newStatus) {
-    const tableName = getTableName();
+    // const tableName = getTableName();
+    const tableName = 'tvtable_20240805'
 
     // Initialize DynamoDB DocumentClient
 
@@ -121,9 +123,7 @@ async function processCSV(filePath, ticker) {
         const bearishPlusLastDate = getLastDateWithFilterWithSpecificValue(data, 'Bearish+', '1', 'time');
         const bullishExitLastDate = getLastDateWithFilterWithAnyValue(data, 'Bullish Exit', 'time');
         const bearishExitLastDate = getLastDateWithFilterWithAnyValue(data, 'Bearish Exit', 'time');
-        console.log(
-            bullishLastDate
-        )
+        // console.log(bullishLastDate)
         if(
             bullishLastDate !== ticker.bullish_bartime ||
             bearishLastDate !== ticker.bearish_bartime ||
@@ -132,7 +132,7 @@ async function processCSV(filePath, ticker) {
             bullishExitLastDate !== ticker.bullish_exit_bartime ||
             bearishExitLastDate !== ticker.bearish_exit_bartime 
         ) {
-            // await storeResultsInDynamoDB(ticker, bullishLastDate, bearishLastDate, bullishPlusLastDate, bearishPlusLastDate, bullishExitLastDate, bearishExitLastDate);
+            await storeResultsInDynamoDB(ticker, bullishLastDate, bearishLastDate, bullishPlusLastDate, bearishPlusLastDate, bullishExitLastDate, bearishExitLastDate);
         }
 
     } catch (error) {
@@ -141,7 +141,8 @@ async function processCSV(filePath, ticker) {
 }
 
 async function storeResultsInDynamoDB(ticker, bullishLastDate, bearishLastDate, bullishPlusLastDate, bearishPlusLastDate, bullishExitLastDate, bearishExitLastDate) {
-    const tableName = getTableName();
+    // const tableName = getTableName();
+    const tableName = 'tvtable_20240805';
     const params = {
         TableName: tableName,
         Key: { ticker: ticker },

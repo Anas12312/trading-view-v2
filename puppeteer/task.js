@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const { timeout } = require('puppeteer');
 const config = require('../config');
 const chalk = require('chalk');
+const { findFilesByTicker } = require('../utils/extractTickerName');
 dotenv.config();
 
 function delay(time) {
@@ -29,7 +30,9 @@ const runIndcator = async (page, ticker, mode) => {
                 delay: 5
             })
             await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo')
-            await page.click('.itemRow-oRSs8UQo div:nth-child(1)')
+            await page.click('.itemRow-oRSs8UQo div:nth-child(1)', {
+                delay: 50
+            })
             // console.log("changed ticker name")
         } catch (e) {
             console.log(e)
@@ -39,8 +42,8 @@ const runIndcator = async (page, ticker, mode) => {
     }
 
     // Add Indcator
-    
-    
+
+
     // await delay(1000) // SF: to remvoe the delay
 
     // Save Changes
@@ -138,26 +141,35 @@ const runIndcator = async (page, ticker, mode) => {
             console.log("submitted the downloadCSV dialog")
         } catch (e) {
             console.log("failed to save CSV, trying again...")
-            await downloadCSV(page)
+            console.log(e)
+            // await downloadCSV(page)
         }
     }
 
     console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
+    mode = 0
     if (mode == 0) {
-        await addAllIndicators(page)
-        await save(page)
         await changeTicker(ticker, page)
         await addingAlerts(page)
-        await save(page)
+        await downloadCSV(page)
+        console.log("Downloading the csv file...")
+        while (1) {
+            if (findFilesByTicker(ticker, './csv').length) break
+            await delay(200)
+        }
+        console.log("CSV file downloaded")
+    } else if (mode == 1 || mode == 2) {
+        await changeTicker(ticker, page)
         await zoomOut(page)
         await downloadCSV(page)
-        await delay(2000)
-    } else if (mode == 1) {
-        await changeTicker(ticker, page)
-        // await addingAlerts(page)
-        // await zoomOut(page)
-        // await downloadCSV(page)
-        // await delay(2000)
+        console.log("Downloading the csv file...")
+        while (1) {
+            if (findFilesByTicker(ticker, './csv').length) break
+            await delay(200)
+        }
+        console.log("CSV file downloaded")
+        // await delay(1000)
+        // await save(page)
     }
 
 }
