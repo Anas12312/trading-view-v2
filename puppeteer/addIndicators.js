@@ -23,7 +23,8 @@ async function addAllIndicators(headless) {
         await addIndicatorIfNotExist(indicator.short, indicator.name, page)
     }
     await save(page)
-    // await browser.close()
+    await delay(500)
+    await browser.close()
 }
 async function save(page) {
     try {

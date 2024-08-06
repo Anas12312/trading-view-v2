@@ -121,7 +121,9 @@ async function processCSV(filePath, ticker) {
         const bearishPlusLastDate = getLastDateWithFilterWithSpecificValue(data, 'Bearish+', '1', 'time');
         const bullishExitLastDate = getLastDateWithFilterWithAnyValue(data, 'Bullish Exit', 'time');
         const bearishExitLastDate = getLastDateWithFilterWithAnyValue(data, 'Bearish Exit', 'time');
-
+        console.log(
+            bullishLastDate
+        )
         if(
             bullishLastDate !== ticker.bullish_bartime ||
             bearishLastDate !== ticker.bearish_bartime ||
@@ -130,7 +132,7 @@ async function processCSV(filePath, ticker) {
             bullishExitLastDate !== ticker.bullish_exit_bartime ||
             bearishExitLastDate !== ticker.bearish_exit_bartime 
         ) {
-            await storeResultsInDynamoDB(ticker, bullishLastDate, bearishLastDate, bullishPlusLastDate, bearishPlusLastDate, bullishExitLastDate, bearishExitLastDate);
+            // await storeResultsInDynamoDB(ticker, bullishLastDate, bearishLastDate, bullishPlusLastDate, bearishPlusLastDate, bullishExitLastDate, bearishExitLastDate);
         }
 
     } catch (error) {

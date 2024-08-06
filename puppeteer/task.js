@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer')
 const dotenv = require('dotenv');
 const { timeout } = require('puppeteer');
 const config = require('../config');
+const chalk = require('chalk');
 dotenv.config();
 
 function delay(time) {
@@ -21,14 +22,14 @@ const runIndcator = async (page, ticker, mode) => {
             await searchBtn.click({
                 delay: 10
             })
-            console.log("clicked on search")
+            // console.log("clicked on search")
             await page.waitForSelector('[data-name="symbol-search-items-dialog"] input')
             await page.type('[data-name="symbol-search-items-dialog"] input', stockName, {
                 delay: 5
             })
             await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo')
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)')
-            console.log("changed ticker name")
+            // console.log("changed ticker name")
         } catch (e) {
             console.log("failed to change ticker name, trying again...")
             // return await changeTicker(stockName)
@@ -139,7 +140,7 @@ const runIndcator = async (page, ticker, mode) => {
         }
     }
 
-    console.log("running the script" + "with mode: " + mode)
+    console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
     if (mode == 0) {
         await addAllIndicators(page)
         await save(page)
@@ -151,9 +152,10 @@ const runIndcator = async (page, ticker, mode) => {
         await delay(2000)
     } else if (mode == 1) {
         await changeTicker(ticker, page)
-        await zoomOut(page)
-        await downloadCSV(page)
-        await delay(2000)
+        // await addingAlerts(page)
+        // await zoomOut(page)
+        // await downloadCSV(page)
+        // await delay(2000)
     }
 
 }
