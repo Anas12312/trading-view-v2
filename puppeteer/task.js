@@ -35,6 +35,7 @@ const runIndcator = async (page, ticker, mode) => {
             })
             // console.log("changed ticker name")
         } catch (e) {
+            console.log(chalk.red(stockName))
             console.log(e)
             console.log("failed to change ticker name, trying again...")
             // return await changeTicker(stockName)
@@ -111,13 +112,16 @@ const runIndcator = async (page, ticker, mode) => {
         try {
             await page.waitForSelector('[data-name="save-load-menu"]')
             const dropDownBtn = await page.$('[data-name="save-load-menu"]')
+            await delay(500)
             await dropDownBtn.click({
-                delay: 20
+                delay: 100,
+                count: 1
             })
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the dropdown button")
-            await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]')
-            const menuBtn = (await page.$$('[data-name="menu-inner"] [data-role="menuitem"]')).at(5)
+            const menuBtn = await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)')
+            console.log("found the button")
+            await delay(500)
             menuBtn.click({
                 delay: 100
             })
@@ -147,7 +151,7 @@ const runIndcator = async (page, ticker, mode) => {
     }
 
     console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
-    mode = 0
+    mode = 2
     if (mode == 0) {
         await changeTicker(ticker, page)
         await addingAlerts(page)
@@ -163,9 +167,12 @@ const runIndcator = async (page, ticker, mode) => {
         await zoomOut(page)
         await downloadCSV(page)
         console.log("Downloading the csv file...")
+        let tries = 0
         while (1) {
             if (findFilesByTicker(ticker, './csv').length) break
-            await delay(200)
+            if(tries == 5) break;
+            await delay(300)
+            tries++
         }
         console.log("CSV file downloaded")
         // await delay(1000)
