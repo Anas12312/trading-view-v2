@@ -1,77 +1,81 @@
 const { Cluster } = require('puppeteer-cluster');
-const runIndcator = require('./task');
-const os = require('os')
+const runIndicator = require('./task');
 const fs = require('fs');
 const chalk = require('chalk');
-const { findFilesByTicker, getMostRecentFile } = require('../utils/extractTickerName');
-const { processCSV, updateItem } = require('../csv');
 const path = require('path');
+
 function delay(time) {
-    return new Promise(function (resolve) {
-        setTimeout(resolve, time)
-    });
+    return new Promise(resolve => setTimeout(resolve, time));
 }
 
 async function init(noOfBrowsers) {
-
     const cluster = await Cluster.launch({
-        concurrency: Cluster.CONCURRENCY_BROWSER,
+        concurrency: Cluster.CONCURRENCY_CONTEXT,
         maxConcurrency: noOfBrowsers,
         puppeteerOptions: {
             timeout: 50_000,
-            headless: true, // Enable headless mode
+            headless: true,
             defaultViewport: false,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
-        retryLimit: 0
+        retryLimit: 0,
     });
 
-    await cluster.task(async ({ page, data }) => {
+    const processStock = async ({ page, data }) => {
+        const { tickers } = data;
+        const browser = page.browser()
         try {
+            // Set cookies and download behavior once per page session
             await page.setCookie(...JSON.parse(fs.readFileSync('cookies.json')));
             const client = await page.createCDPSession();
             await client.send("Page.setDownloadBehavior", {
                 behavior: "allow",
-                downloadPath: 'C:\\Users\\Administrator\\Downloads\\trading-view-v2\\csv',
+                downloadPath: path.resolve('C:\\Users\\Administrator\\Downloads\\trading-view-v2\\csv'),
             });
-            await page.goto("https://www.tradingview.com/chart/", {
-                waitUntil: "domcontentloaded"
-            })
-            // let pagee = page
-            console.log(data.queue.map(t => t.ticker))
-            for (let ticker of data.queue) {
-                if (!ticker.ticker) continue
-                try {
-                    ticker.status = 2
-                    const before = new Date()
-                    console.log(chalk.green("[RUNNING TICKER]: ") + chalk.blue(ticker.ticker) + "\tON CORE " + chalk.yellow(ticker.core))
-                    await runIndcator(page, ticker.ticker, ticker.status)
-                    const after = new Date()
-                    console.log(chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((after - before) / 1000) + " sec")
 
-                    if (ticker.status == 2) {
-                        continue
-                    }
-                    const filePaths = findFilesByTicker(ticker.ticker, './csv')
-                    const mostRecentFile = getMostRecentFile(filePaths, './csv')
-                    mostRecentFile && await processCSV(path.join(__dirname, '../csv', mostRecentFile), ticker)
-                    if (ticker.status == 0) {
-                        ticker.status == 0 && await updateItem(ticker.ticker, 5)
-                    }
-                } catch (e) {
-                    console.log(chalk.red(ticker.ticker))
-                    console.log(e)
-                    // await (page.browser().newPage())
+            console.log(chalk.green("[NAVIGATING TO TRADINGVIEW CHART]"));
+            await page.goto("https://www.tradingview.com/chart/", {
+                waitUntil: "load",
+                timeout: 0,
+            });
+            // for(let i = 0;i<3;i++) {
+            //     try {
+            //         await page.waitForSelector("sadasdasd", {
+            //             timeout: 10000
+            //         })
+            //     } catch(e) {
+            //         console.log("amas")
+            //     }
+            // }
+            for (const ticker of tickers) {
+                console.log(chalk.green("[RUNNING TICKER]: ") + chalk.blue(ticker.ticker) + "\tON CORE " + chalk.yellow(ticker.core))
+
+                const startTime = new Date();
+
+                try {
+                    await runIndicator(page, ticker.ticker, ticker.status);
+                } catch (err) {
+                    console.error(`Failed`);
                 }
-                await delay(250)
+
+                const endTime = new Date();
+                console.log(chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((endTime - startTime) / 1000) + " sec");
+
+                await delay(250); // Delay between processing tickers
             }
-            console.log("TOTAL TIME: ")
-            const after = new Date()
-            console.log((after - data.startTime) / 1000)
-        }catch(e) {
-            console.log(e)
+        } catch (err) {
+            console.error(`Error processing tickers: ${err.message}`);
+            // await page.close(); // Close page to release resources
+            // throw err;
         }
-        await page.close()
+    };
+
+    await cluster.task(processStock);
+    cluster.on('taskerror', (err, data) => {
+        console.error(`Error processing tickers: ${err.message}`);
     });
-    return cluster
+
+    return cluster;
 }
-module.exports = init
+
+module.exports = init;

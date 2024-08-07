@@ -14,236 +14,236 @@ async function main() {
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
-    const tickers = await getAllTickers()
+    // const tickers = await getAllTickers()
     const cpuCount = os.cpus().length;
     console.log(cpuCount)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 4
+    const noOfBrowsers = 1
     const noOfTickersPerChunks = 4
-    // const tickers = [
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "KRNL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AAPL",
-    //         status: 0
-    //     }
-    //     {
-    //         ticker: "TSLA",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "NVDA",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "F",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "DAX",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "BX1",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "IB1",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "AMZN",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "WEED",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "MSFT",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "2330",
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: "INTC",
-    //         status: 0
-    //     },
-    // ]
-    const queues = spreadTasks(tickers, tickers.length / noOfTickersPerChunks)
-    // const queues = spreadTasks(tickers, noOfBrowsers)
+    const tickers = [
+        {
+            ticker: "AAPL",
+            status: 1
+        },
+        {
+            ticker: "KRNL",
+            status: 1
+        },
+        {
+            ticker: "AAPL",
+            status: 1
+        },
+        {
+            ticker: "AAPL",
+            status: 1
+        },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AAPL",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "TSLA",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "NVDA",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "F",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "DAX",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "BX1",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "IB1",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "AMZN",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "WEED",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "MSFT",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "2330",
+        //     status: 0
+        // },
+        // {
+        //     ticker: "INTC",
+        //     status: 0
+        // },
+    ]
+    // const queues = spreadTasks(tickers, tickers.length / noOfTickersPerChunks)
+    const queues = spreadTasks(tickers, noOfBrowsers)
     console.log(queues)
     console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")
     console.log(chalk.green("[TICKERS PER CORE]: ") + chalk.yellow(Math.ceil(tickers.length / queues.length)))
@@ -255,7 +255,7 @@ async function main() {
     const startTime = new Date()
     queues.forEach((queue) => {
         cluster.queue({
-            queue,
+            tickers: queue,
             startTime
         })
 

@@ -19,13 +19,19 @@ const runIndcator = async (page, ticker, mode) => {
     async function changeTicker(stockName) {
         console.log(page.isClosed())
         try {
-            await page.waitForSelector('#header-toolbar-symbol-search')
-            const searchBtn = await page.$('#header-toolbar-symbol-search')
-            await searchBtn.click({
+            // await page.waitForSelector("asdkjashdkjashdjkhasjkdh", {
+            //     timeout: 5000
+            // })
+            await page.waitForSelector('#header-toolbar-symbol-search', {
+                timeout: 10000
+            })
+            await page.click('#header-toolbar-symbol-search', {
                 delay: 10
             })
-            // console.log("clicked on search")
-            await page.waitForSelector('[data-name="symbol-search-items-dialog"] input')
+            console.log("clicked on search")
+            await page.waitForSelector('[data-name="symbol-search-items-dialog"] input',{
+                timeout: 5000
+            })
             await page.type('[data-name="symbol-search-items-dialog"] input', stockName, {
                 delay: 5
             })
@@ -33,7 +39,7 @@ const runIndcator = async (page, ticker, mode) => {
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)', {
                 delay: 50
             })
-            // console.log("changed ticker name")
+            console.log("changed ticker name")
         } catch (e) {
             console.log(chalk.red(stockName))
             console.log(e)
@@ -110,26 +116,28 @@ const runIndcator = async (page, ticker, mode) => {
     }
     async function downloadCSV(page) {
         try {
-            await page.waitForSelector('[data-name="save-load-menu"]')
-            const dropDownBtn = await page.$('[data-name="save-load-menu"]')
+            await page.waitForSelector('[data-name="save-load-menu"]', {
+                visible: true
+            })
             await delay(500)
-            await dropDownBtn.click({
+            await page.click('[data-name="save-load-menu"]', {
                 delay: 100,
                 count: 1
             })
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the dropdown button")
-            const menuBtn = await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)')
+            await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
+                timeout: 5000
+            })
             console.log("found the button")
             await delay(500)
-            menuBtn.click({
+            await page.click('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
                 delay: 100
             })
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the menu button")
             await page.waitForSelector("#time-format-select")
-            const dropDownButton = (await page.$("#time-format-select"))
-            await dropDownButton.click({
+            await page.click("#time-format-select", {
                 delay: 20
             })
             // await delay(1000) // SF: to remvoe the delay
@@ -166,15 +174,15 @@ const runIndcator = async (page, ticker, mode) => {
         await changeTicker(ticker, page)
         await zoomOut(page)
         await downloadCSV(page)
-        console.log("Downloading the csv file...")
-        let tries = 0
-        while (1) {
-            if (findFilesByTicker(ticker, './csv').length) break
-            if(tries == 5) break;
-            await delay(300)
-            tries++
-        }
-        console.log("CSV file downloaded")
+        // console.log("Downloading the csv file...")
+        // let tries = 0
+        // while (1) {
+        //     if (findFilesByTicker(ticker, './csv').length) break
+        //     if(tries == 5) break;
+        //     await delay(300)
+        //     tries++
+        // }
+        // console.log("CSV file downloaded")
         // await delay(1000)
         // await save(page)
     }
