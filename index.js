@@ -18,7 +18,7 @@ async function main() {
     const cpuCount = os.cpus().length;
     console.log(cpuCount)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 4
+    const noOfBrowsers = 3
     const noOfTickersPerChunks = 4
     const tickers = [
         {
@@ -471,17 +471,20 @@ async function main() {
         })
     })
 
-    setTimeout(() => {
-        const startTime = new Date()
-        queues.forEach((queue) => {
-            cluster.queue({
-                tickers: queue,
-                startTime
-            })
-        })
-    }, 1 * 60 * 1000)
+    // setTimeout(() => {
+    //     const startTime = new Date()
+    //     queues.forEach((queue) => {
+    //         cluster.queue({
+    //             tickers: queue,
+    //             startTime
+    //         })
+    //     })
+    // }, 1 * 60 * 1000)
 
-    // await cluster.idle();
-    // await cluster.close();
+    await cluster.idle();
+    await cluster.close();
+    console.log("TOTAL TIME: ")
+    const after = new Date()
+    console.log((after - startTime) / 1000)
 }
 main()

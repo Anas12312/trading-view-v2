@@ -19,9 +19,6 @@ const runIndcator = async (page, ticker, mode) => {
     async function changeTicker(stockName) {
         console.log(page.isClosed())
         try {
-            // await page.waitForSelector("asdkjashdkjashdjkhasjkdh", {
-            //     timeout: 5000
-            // })
             await page.waitForSelector('#header-toolbar-symbol-search', {
                 timeout: 1000
             })
@@ -33,17 +30,23 @@ const runIndcator = async (page, ticker, mode) => {
                 timeout: 1000
             })
             await page.type('[data-name="symbol-search-items-dialog"] input', stockName, {
-                delay: 5
+                delay: 10
             })
+            await page.waitForSelector('#stocks', {
+                timeout: 1000
+            })
+            await page.click('#stocks', {
+                delay: 10
+            })
+            // await delay(1000)
             await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo')
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)', {
-                delay: 50
+                delay: 10
             })
             console.log("changed ticker name")
         } catch (e) {
             console.log(chalk.red(stockName))
-            console.log(e)
-            console.log("failed to change ticker name, trying again...")
+            // console.log(e)
             throw(e)
             // return await changeTicker(stockName)
         }
@@ -152,8 +155,8 @@ const runIndcator = async (page, ticker, mode) => {
             // })
             console.log("submitted the downloadCSV dialog")
         } catch (e) {
-            console.log("failed to save CSV, trying again...")
-            console.log(e)
+            // console.log("failed to save CSV, trying again...")
+            // console.log(e)
             throw(e)
             // await downloadCSV(page)
         }
