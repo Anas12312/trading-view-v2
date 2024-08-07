@@ -18,7 +18,7 @@ async function main() {
     const cpuCount = os.cpus().length;
     console.log(cpuCount)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 1
+    const noOfBrowsers = 4
     const noOfTickersPerChunks = 4
     const tickers = [
         {
@@ -37,210 +37,210 @@ async function main() {
             ticker: "AAPL",
             status: 1
         },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AAPL",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "TSLA",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "NVDA",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "F",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "DAX",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "BX1",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "IB1",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "AMZN",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "WEED",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "MSFT",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "2330",
-        //     status: 0
-        // },
-        // {
-        //     ticker: "INTC",
-        //     status: 0
-        // },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "AAPL",
+            status: 0
+        },
+        {
+            ticker: "TSLA",
+            status: 0
+        },
+        {
+            ticker: "NVDA",
+            status: 0
+        },
+        {
+            ticker: "F",
+            status: 0
+        },
+        {
+            ticker: "DAX",
+            status: 0
+        },
+        {
+            ticker: "BX1",
+            status: 0
+        },
+        {
+            ticker: "IB1",
+            status: 0
+        },
+        {
+            ticker: "AMZN",
+            status: 0
+        },
+        {
+            ticker: "WEED",
+            status: 0
+        },
+        {
+            ticker: "MSFT",
+            status: 0
+        },
+        {
+            ticker: "2330",
+            status: 0
+        },
+        {
+            ticker: "INTC",
+            status: 0
+        },
     ]
     // const queues = spreadTasks(tickers, tickers.length / noOfTickersPerChunks)
     const queues = spreadTasks(tickers, noOfBrowsers)
@@ -262,7 +262,7 @@ async function main() {
         
     })
 
-    // await cluster.idle();
-    // await cluster.close();
+    await cluster.idle();
+    await cluster.close();
 }
 main()

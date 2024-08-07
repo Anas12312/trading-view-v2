@@ -14,16 +14,16 @@ async function init(noOfBrowsers) {
         maxConcurrency: noOfBrowsers,
         puppeteerOptions: {
             timeout: 50_000,
-            headless: true,
+            headless: false,
             defaultViewport: false,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
         retryLimit: 0,
+        timeout: 2000000000
     });
 
     const processStock = async ({ page, data }) => {
         const { tickers } = data;
-        const browser = page.browser()
         try {
             // Set cookies and download behavior once per page session
             await page.setCookie(...JSON.parse(fs.readFileSync('cookies.json')));
@@ -38,24 +38,27 @@ async function init(noOfBrowsers) {
                 waitUntil: "load",
                 timeout: 0,
             });
-            // for(let i = 0;i<3;i++) {
-            //     try {
-            //         await page.waitForSelector("sadasdasd", {
-            //             timeout: 10000
-            //         })
-            //     } catch(e) {
-            //         console.log("amas")
-            //     }
-            // }
+
             for (const ticker of tickers) {
+                if(!ticker.ticker) continue
                 console.log(chalk.green("[RUNNING TICKER]: ") + chalk.blue(ticker.ticker) + "\tON CORE " + chalk.yellow(ticker.core))
 
                 const startTime = new Date();
+                const maxRetries = 3;
 
-                try {
-                    await runIndicator(page, ticker.ticker, ticker.status);
-                } catch (err) {
-                    console.error(`Failed`);
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        await runIndicator(page, ticker.ticker, ticker.status);
+                        break; // Exit loop if successful
+                    } catch (err) {
+                        if (attempt === maxRetries) {
+                            console.error(`Failed after ${maxRetries} attempts: ${err.message}`);
+                        } else {
+                            console.log(`Retrying (${attempt}/${maxRetries}) for ${ticker.ticker}...`);
+
+                            // await page.reload({ waitUntil: ["domcontentloaded"] });
+                        }
+                    }
                 }
 
                 const endTime = new Date();
@@ -63,10 +66,14 @@ async function init(noOfBrowsers) {
 
                 await delay(250); // Delay between processing tickers
             }
+            console.log("TOTAL TIME: ")
+            const after = new Date()
+            console.log((after - data.startTime) / 1000)
+            await page.close()
         } catch (err) {
             console.error(`Error processing tickers: ${err.message}`);
-            // await page.close(); // Close page to release resources
-            // throw err;
+            await page.close(); // Close page to release resources
+            throw err;
         }
     };
 

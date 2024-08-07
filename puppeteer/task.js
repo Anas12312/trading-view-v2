@@ -23,14 +23,14 @@ const runIndcator = async (page, ticker, mode) => {
             //     timeout: 5000
             // })
             await page.waitForSelector('#header-toolbar-symbol-search', {
-                timeout: 10000
+                timeout: 1000
             })
             await page.click('#header-toolbar-symbol-search', {
                 delay: 10
             })
             console.log("clicked on search")
             await page.waitForSelector('[data-name="symbol-search-items-dialog"] input',{
-                timeout: 5000
+                timeout: 1000
             })
             await page.type('[data-name="symbol-search-items-dialog"] input', stockName, {
                 delay: 5
@@ -44,6 +44,7 @@ const runIndcator = async (page, ticker, mode) => {
             console.log(chalk.red(stockName))
             console.log(e)
             console.log("failed to change ticker name, trying again...")
+            throw(e)
             // return await changeTicker(stockName)
         }
     }
@@ -117,6 +118,7 @@ const runIndcator = async (page, ticker, mode) => {
     async function downloadCSV(page) {
         try {
             await page.waitForSelector('[data-name="save-load-menu"]', {
+                timeout: 1000,
                 visible: true
             })
             await delay(500)
@@ -127,7 +129,7 @@ const runIndcator = async (page, ticker, mode) => {
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the dropdown button")
             await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
-                timeout: 5000
+                timeout: 1000
             })
             console.log("found the button")
             await delay(500)
@@ -154,6 +156,7 @@ const runIndcator = async (page, ticker, mode) => {
         } catch (e) {
             console.log("failed to save CSV, trying again...")
             console.log(e)
+            throw(e)
             // await downloadCSV(page)
         }
     }
@@ -173,7 +176,7 @@ const runIndcator = async (page, ticker, mode) => {
     } else if (mode == 1 || mode == 2) {
         await changeTicker(ticker, page)
         await zoomOut(page)
-        await downloadCSV(page)
+        // await downloadCSV(page)
         // console.log("Downloading the csv file...")
         // let tries = 0
         // while (1) {
