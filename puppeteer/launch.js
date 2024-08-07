@@ -65,7 +65,7 @@ async function init(noOfBrowsers) {
                 console.log(chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((endTime - startTime) / 1000) + " sec");
 
             }
-            // await delay(250); // Delay between processing tickers
+            await delay(1000); 
             await page.close()
         } catch (err) {
             console.error(`Error processing tickers: ${err.message}`);
