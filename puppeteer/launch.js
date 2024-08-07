@@ -14,7 +14,7 @@ async function init(noOfBrowsers) {
         maxConcurrency: noOfBrowsers,
         puppeteerOptions: {
             timeout: 50_000,
-            headless: false,
+            headless: true,
             defaultViewport: false,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
@@ -64,8 +64,8 @@ async function init(noOfBrowsers) {
                 const endTime = new Date();
                 console.log(chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((endTime - startTime) / 1000) + " sec");
 
-                await delay(250); // Delay between processing tickers
             }
+            await delay(250); // Delay between processing tickers
             console.log("TOTAL TIME: ")
             const after = new Date()
             console.log((after - data.startTime) / 1000)

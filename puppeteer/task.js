@@ -121,9 +121,8 @@ const runIndcator = async (page, ticker, mode) => {
                 timeout: 1000,
                 visible: true
             })
-            await delay(500)
             await page.click('[data-name="save-load-menu"]', {
-                delay: 100,
+                delay: 20,
                 count: 1
             })
             // await delay(1000) // SF: to remvoe the delay
@@ -132,9 +131,8 @@ const runIndcator = async (page, ticker, mode) => {
                 timeout: 1000
             })
             console.log("found the button")
-            await delay(500)
             await page.click('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
-                delay: 100
+                delay: 20
             })
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the menu button")
@@ -149,9 +147,9 @@ const runIndcator = async (page, ticker, mode) => {
             })
             // await delay(1000) // SF: to remvoe the delay
             console.log("changed time format")
-            await page.click("[data-name='submit-button']", {
-                delay: 20
-            })
+            // await page.click("[data-name='submit-button']", {
+            //     delay: 20
+            // })
             console.log("submitted the downloadCSV dialog")
         } catch (e) {
             console.log("failed to save CSV, trying again...")
@@ -170,13 +168,12 @@ const runIndcator = async (page, ticker, mode) => {
         console.log("Downloading the csv file...")
         while (1) {
             if (findFilesByTicker(ticker, './csv').length) break
-            await delay(200)
         }
         console.log("CSV file downloaded")
     } else if (mode == 1 || mode == 2) {
         await changeTicker(ticker, page)
-        await zoomOut(page)
-        // await downloadCSV(page)
+        // await zoomOut(page)
+        await downloadCSV(page)
         // console.log("Downloading the csv file...")
         // let tries = 0
         // while (1) {
