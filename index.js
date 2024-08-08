@@ -9,26 +9,57 @@ const addAllIndicators = require("./puppeteer/addIndicators")
 const spreadTasks = require("./utils/spreadTasks")
 const os = require('os')
 const chalk = require("chalk")
+const dbtickers = require("./dbtickers")
 async function main() {
 
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
-    const tickers = await getAllTickers()
+    // const tickers = await getAllTickers()
+    console.log((path.join(__dirname, 'csv')))
+    const tickers = dbtickers
     const cpuCount = os.cpus().length;
     console.log(cpuCount)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers =50
+    const noOfBrowsers = 3
     const noOfTickersPerChunks = 15
     // const tickers = [
     //     {
     //         ticker: 'AAPL',
     //         status: 0
-    //     }
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
+    //     {
+    //         ticker: 'AAPL',
+    //         status: 0
+    //     },
     // ]
     // const queues = spreadTasks(tickers, tickers.length / noOfTickersPerChunks)
     const queues = spreadTasks(tickers, noOfBrowsers)
-    console.log(queues)
+    // console.log(queues)
     console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")
     console.log(chalk.green("[TICKERS PER CORE]: ") + chalk.yellow(Math.ceil(tickers.length / queues.length)))
     // console.log(queues)
@@ -44,16 +75,6 @@ async function main() {
             startTime
         })
     })
-
-    // setTimeout(() => {
-    //     const startTime = new Date()
-    //     queues.forEach((queue) => {
-    //         cluster.queue({
-    //             tickers: queue,
-    //             startTime
-    //         })
-    //     })
-    // }, 1 * 60 * 1000)
 
     await cluster.idle();
     await cluster.close();

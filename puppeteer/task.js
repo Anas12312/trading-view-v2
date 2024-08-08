@@ -20,27 +20,27 @@ const runIndcator = async (page, ticker, mode) => {
         console.log(page.isClosed())
         try {
             await page.waitForSelector('#header-toolbar-symbol-search', {
-                timeout: 200
+                timeout: 1000
             })
             await page.click('#header-toolbar-symbol-search', {
                 delay: 10
             })
             console.log("clicked on search")
             await page.waitForSelector('[data-name="symbol-search-items-dialog"] input',{
-                timeout: 200
+                timeout: 1000
             })
             await page.type('[data-name="symbol-search-items-dialog"] input', stockName, {
                 delay: 10
             })
             await page.waitForSelector('#stocks', {
-                timeout: 200
+                timeout: 1000
             })
             await page.click('#stocks', {
                 delay: 10
             })
             // await delay(1000)
             await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo',{
-                timeout: 200
+                timeout: 1000
             })
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)', {
                 delay: 10
@@ -123,7 +123,7 @@ const runIndcator = async (page, ticker, mode) => {
     async function downloadCSV(page) {
         try {
             await page.waitForSelector('[data-name="save-load-menu"]', {
-                timeout: 500,
+                timeout: 1000,
                 visible: true
             })
             await page.click('[data-name="save-load-menu"]', {
@@ -133,7 +133,7 @@ const runIndcator = async (page, ticker, mode) => {
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the dropdown button")
             await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
-                timeout: 800
+                timeout: 1000
             })
             console.log("found the button")
             await page.click('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
@@ -142,14 +142,14 @@ const runIndcator = async (page, ticker, mode) => {
             // await delay(1000) // SF: to remvoe the delay
             console.log("clicked on the menu button")
             await page.waitForSelector("#time-format-select", {
-                timeout: 500
+                timeout: 1000
             })
             await page.click("#time-format-select", {
                 delay: 20
             })
             // await delay(1000) // SF: to remvoe the delay
             await page.waitForSelector("#time-format-iso", {
-                timeout: 500
+                timeout: 1000
             })
             await page.click("#time-format-iso", {
                 delay: 20
@@ -187,11 +187,11 @@ const runIndcator = async (page, ticker, mode) => {
         // let tries = 0
         // while (1) {
         //     if (findFilesByTicker(ticker, './csv').length) break
-        //     if(tries == 5) break;
+        //     if(tries == 5) throw new Error("not downloaded");
         //     await delay(300)
         //     tries++
         // }
-        // console.log("CSV file downloaded")
+        console.log("CSV file downloaded")
         // await delay(1000)
         // await save(page)
     }
