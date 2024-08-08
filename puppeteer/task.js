@@ -17,7 +17,7 @@ const runIndcator = async (page, ticker, mode) => {
     // Change Ticker Name
 
     async function changeTicker(stockName) {
-        console.log(page.isClosed())
+        // console.log(page.isClosed())
         try {
             await page.waitForSelector('#header-toolbar-symbol-search', {
                 timeout: 1000
@@ -169,7 +169,7 @@ const runIndcator = async (page, ticker, mode) => {
     }
 
     console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
-    mode = 2
+    mode = 1
     if (mode == 0) {
         await changeTicker(ticker, page)
         await addingAlerts(page)

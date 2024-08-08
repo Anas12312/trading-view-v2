@@ -15,13 +15,13 @@ async function main() {
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
-    // const tickers = await getAllTickers()
+    const tickers = await getAllTickers()
     console.log((path.join(__dirname, 'csv')))
-    const tickers = dbtickers
+    // const tickers = dbtickers
     const cpuCount = os.cpus().length;
     console.log(cpuCount)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 3
+    const noOfBrowsers = 4
     const noOfTickersPerChunks = 15
     // const tickers = [
     //     {
@@ -66,8 +66,8 @@ async function main() {
     // getCookies()
     // 2- Run indicator creation script (TickerName, Mode)
     // 3- Parse CSV -> Store outcome in dynamoDB
-    const cluster = await init(noOfBrowsers)
     const startTime = new Date()
+    const cluster = await init(noOfBrowsers)
 
     queues.forEach((queue) => {
         cluster.queue({

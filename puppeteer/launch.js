@@ -42,8 +42,13 @@ async function init(noOfBrowsers) {
                 waitUntil: "load",
                 timeout: 0,
             });
+
+            // console.log("INIT TIME: ")
+            // const after = new Date()
+            // console.log((after - data.startTime) / 1000)
+
             await processTickers(tickers, page, 0)
-            await delay(1000);
+            // await delay(1000);
             await page.close()
         } catch (err) {
             console.error(`Error processing tickers: ${err.message}`);
