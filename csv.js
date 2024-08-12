@@ -6,15 +6,16 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 // Function to get the table name based on the current date
 function getTableName() {
     const currentDate = new Date().toISOString().split('T')[0].replace(/-/g, '');
-    return `tvtable_${currentDate}`;
+    // return `tvtable_${currentDate}`;
+    return "tvtable_20240805";
 }
 async function update(params) {
     
 }
 async function getAllTickers(status) {
     const params = {
-        // TableName: getTableName(),
-        TableName: 'tvtable_20240805',
+        TableName: getTableName(),
+        // TableName: 'tvtable_20240805',
         FilterExpression: '#status IN (:statusValue0, :statusValue1)',
         ExpressionAttributeNames: {
             '#status': 'status'
@@ -36,8 +37,8 @@ async function getAllTickers(status) {
 }
 // Function to update an item in the DynamoDB table
 async function updateItem(ticker, newStatus) {
-    // const tableName = getTableName();
-    const tableName = 'tvtable_20240805'
+    const tableName = getTableName();
+    // const tableName = 'tvtable_20240805'
 
     // Initialize DynamoDB DocumentClient
 
@@ -141,8 +142,8 @@ async function processCSV(filePath, ticker) {
 }
 
 async function storeResultsInDynamoDB(ticker, bullishLastDate, bearishLastDate, bullishPlusLastDate, bearishPlusLastDate, bullishExitLastDate, bearishExitLastDate) {
-    // const tableName = getTableName();
-    const tableName = 'tvtable_20240805';
+    const tableName = getTableName();
+    // const tableName = 'tvtable_20240805';
     const params = {
         TableName: tableName,
         Key: { ticker: ticker },
