@@ -12,13 +12,14 @@ const getCookies = async () => {
         ],
         defaultViewport: false
     })
-
+    
     const page = await browser.newPage()
+    
     await page.goto("https://www.tradingview.com/chart/", {
         waitUntil: "domcontentloaded",
         timeout: 50000
     })
     fs.writeFileSync('cookies.json', JSON.stringify(await page.cookies()))
 }
-
+// getCookies()
 module.exports = getCookies

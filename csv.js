@@ -6,8 +6,8 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 // Function to get the table name based on the current date
 function getTableName() {
     const currentDate = new Date().toISOString().split('T')[0].replace(/-/g, '');
-    // return `tvtable_${currentDate}`;
-    return "tvtable_20240805";
+    return `tvtable_${currentDate}`;
+    // return "tvtable_20240805";
 }
 async function update(params) {
     
@@ -22,6 +22,7 @@ async function getAllTickers(status) {
         },
         ExpressionAttributeValues: {
             ':statusValue0': 0,
+            // ':statusValue0': 5,
             ':statusValue1': 1
         }
     }

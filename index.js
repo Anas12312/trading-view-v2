@@ -20,17 +20,17 @@ async function main() {
     // const tickers = dbtickers
     if(!tickers || !tickers.length) return;
     const cpuCount = os.cpus().length;
-    console.log(cpuCount)
+    console.log(tickers.length)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 1
+    const noOfBrowsers = 2
     const queues = spreadTasks(tickers, noOfBrowsers)
-    // console.log(queues)
-    console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")
-    console.log(chalk.green("[TICKERS PER CORE]: ") + chalk.yellow(Math.ceil(tickers.length / queues.length)))
-    // console.log(queues)
+    console.log(queues)
+    // console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")
+    // console.log(chalk.green("[TICKERS PER CORE]: ") + chalk.yellow(Math.ceil(tickers.length / queues.length)))
+    // // console.log(queues)
     // getCookies()
-    // 2- Run indicator creation script (TickerName, Mode)
-    // 3- Parse CSV -> Store outcome in dynamoDB
+    // // 2- Run indicator creation script (TickerName, Mode)
+    // // 3- Parse CSV -> Store outcome in dynamoDB
     const startTime = new Date()
     const cluster = await init(noOfBrowsers)
 
@@ -47,4 +47,19 @@ async function main() {
     const after = new Date()
     console.log((after - startTime) / 1000)
 }
-main()
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
+// main()
+async function run() {
+    while(true) {
+        await main()
+        await delay(10*1000) // to run every 10 sec
+    }
+}
+run()
+
+// to fetch cookies in case password changes or new accounts. run for one time off. Chrome to be open using profile 1, sign in TV, then close the vrowser, and run this function once.
+// getCookies()  

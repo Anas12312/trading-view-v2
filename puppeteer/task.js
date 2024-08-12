@@ -34,12 +34,12 @@ const runIndcator = async (page, ticker, mode, client) => {
                 delay: 25
             })
             await delay(1000)
-            await page.waitForSelector('#stocks', {
-                timeout: 10000
-            })
-            await page.click('#stocks', {
-                delay: 10
-            })
+            // await page.waitForSelector('#stocks', {
+            //     timeout: 10000
+            // })
+            // await page.click('#stocks', {
+            //     delay: 10
+            // })
             // await delay(1000)
             await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo', {
                 timeout: 10000
@@ -108,6 +108,150 @@ const runIndcator = async (page, ticker, mode, client) => {
             }
         }
     }
+    async function createUpAlert(charts, index, page, indicator) {
+        const maxRetries = 3;
+
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const indcatorLegend = charts.at(index);
+                await indcatorLegend?.click();
+                await delay(150)
+                await page.keyboard.down('Alt')
+                await page.keyboard.down('A')
+
+                await page.keyboard.up('Alt')
+                await page.keyboard.up('A')
+                await delay(1000)
+                await page.waitForSelector('[data-name="operator-select"]', {
+                    timeout: 5000
+                })
+                await page.click('[data-name="operator-select"]', {
+                    delay: 50
+                })
+                await page.waitForSelector('[data-name="popup-menu-container"] > div > div > div', {
+                    timeout: 5000
+                })
+                const options = await page.$$('[data-name="popup-menu-container"] > div > div > div', {
+                    timeout: 50
+                })
+                await options[19].click({
+                    delay: 50
+                })
+                await page.waitForSelector('[data-name="once-per-bar-close"]', {
+                    timeout: 5000
+                })
+                await page.click('[data-name="once-per-bar-close"]', {
+                    delay: 50
+                })
+                const alertName = await page.waitForSelector('#alert-name', {
+                    timeout: 5000
+                })
+                await alertName.type('luxalgo_trend-up', { // SF: Alert name
+                    delay: 20
+                })
+                const textArea = await page.waitForSelector('#alert-message', {
+                    timeout: 5000
+                })
+                await textArea.click({
+                    delay: 50
+                })
+                await page.keyboard.down('Control')
+                await page.keyboard.press('KeyA')
+                await page.keyboard.up('Control')
+                // await textArea.type(String.fromCharCode(8))
+                await delay(300)
+                await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-up}}', { // SF: JSON format of alert messages
+                    delay: 20
+                })
+                const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
+                    timeout: 5000
+                });
+                await createAlertBtn.click({
+                    delay: 50
+                });
+                console.log("alert created")
+                break; // Exit loop if successful
+            } catch (err) {
+                if (attempt === maxRetries) {
+                    console.error(`Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
+                } else {
+                    console.log(`Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
+                }
+            }
+        }
+    }
+    async function createDownAlert(charts, index, page, indicator) {
+        const maxRetries = 3;
+
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const indcatorLegend = charts.at(index);
+                await indcatorLegend?.click();
+                await delay(150)
+                await page.keyboard.down('Alt')
+                await page.keyboard.down('A')
+
+                await page.keyboard.up('Alt')
+                await page.keyboard.up('A')
+                await delay(1000)
+                await page.waitForSelector('[data-name="operator-select"]', {
+                    timeout: 5000
+                })
+                await page.click('[data-name="operator-select"]', {
+                    delay: 50
+                })
+                await page.waitForSelector('[data-name="popup-menu-container"] > div > div > div', {
+                    timeout: 5000
+                })
+                const options = await page.$$('[data-name="popup-menu-container"] > div > div > div', {
+                    timeout: 50
+                })
+                await options[19].click({
+                    delay: 50
+                })
+                await page.waitForSelector('[data-name="once-per-bar-close"]', {
+                    timeout: 5000
+                })
+                await page.click('[data-name="once-per-bar-close"]', {
+                    delay: 50
+                })
+                const alertName = await page.waitForSelector('#alert-name', {
+                    timeout: 5000
+                })
+                await alertName.type('luxalgo_trend-down', { // SF: Alert name
+                    delay: 20
+                })
+                const textArea = await page.waitForSelector('#alert-message', {
+                    timeout: 5000
+                })
+                await textArea.click({
+                    delay: 50
+                })
+                await page.keyboard.down('Control')
+                await page.keyboard.press('KeyA')
+                await page.keyboard.up('Control')
+                // await textArea.type(String.fromCharCode(8))
+                await delay(300)
+                await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-down}}', { // SF: alert json message
+                    delay: 20
+                })
+                const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
+                    timeout: 5000
+                });
+                await createAlertBtn.click({
+                    delay: 50
+                });
+                console.log("alert created")
+                break; // Exit loop if successful
+            } catch (err) {
+                if (attempt === maxRetries) {
+                    console.error(`Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
+                } else {
+                    console.log(`Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
+                }
+            }
+        }
+    }
     // More Action Button
     async function addingAlerts(page) {
         await page.waitForSelector("[data-name='legend-source-title']");
@@ -115,21 +259,40 @@ const runIndcator = async (page, ticker, mode, client) => {
         await delay(1000)
         for (let i in charts) {
             if (i == 0) continue
-            const text = await charts[i].evaluate(t => t.innerText)
-            console.log("trying to add alert " + text)
-            await createAlert(charts, i, page, text)
-            await delay(500)
+            if (i == 1) {
+                const text = await charts[i].evaluate(t => t.innerText)
+                console.log("trying to add alert " + text)
+                await createAlert(charts, i, page, text)
+                await delay(2000)
+                console.log("trying to add down alert " + text)
+                await createDownAlert(charts, i, page, text)
+                await delay(500)
+            }
+            if (i == 2) {
+                const text = await charts[i].evaluate(t => t.innerText)
+                console.log("trying to add up alert " + text)
+                await createUpAlert(charts, i, page, text)
+                await delay(500)
+            }
+            if (i == 3) {
+                const text = await charts[i].evaluate(t => t.innerText)
+                console.log("trying to add alert " + text)
+                await createAlert(charts, i, page, text)
+                await delay(500)
+            }
         }
     }
 
 
     async function zoomOut(page) {
-        await page.keyboard.down('Control')
-        await page.keyboard.down('ArrowDown')
-        await page.keyboard.up('ArrowDown', {
-            delay: 500
-        })
-        await page.keyboard.up('Control')
+        for (let i = 0; i < 50; i++) {
+            await page.keyboard.down('Control')
+            await page.keyboard.down('ArrowDown')
+            await page.keyboard.up('ArrowDown', {
+                delay: 200
+            })
+            await page.keyboard.up('Control')
+        }
     }
     async function setTheIntervalTo1Minute(page) {
         await page.waitForSelector('#header-toolbar-intervals button', {
@@ -212,20 +375,17 @@ const runIndcator = async (page, ticker, mode, client) => {
     }
 
     console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
-<<<<<<< HEAD
-=======
-    mode = 1
->>>>>>> 5aa4ad7131445145490bb9bb4e0748acf9be8b82
     if (mode == 0) {
         await changeTicker(ticker, page)
         await delay(1000)
-        // await addingAlerts(page)
+        await addingAlerts(page)
         await delay(1000)
         const client = await page.createCDPSession();
         await client.send("Page.setDownloadBehavior", {
             behavior: "allow",
             downloadPath: path.resolve(path.join(__dirname, '../csv_1minute')),
         });
+        await zoomOut(page)
         await setTheIntervalTo1Minute(page)
         await delay(5000)
         await downloadCSV(page)
@@ -256,7 +416,7 @@ const runIndcator = async (page, ticker, mode, client) => {
         //     tries++
         // }
         console.log("CSV file downloaded")
-        // await delay(1000)
+        await delay(1000)
         // await save(page)
     }
 

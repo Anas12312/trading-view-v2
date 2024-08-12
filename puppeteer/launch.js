@@ -16,7 +16,7 @@ async function init(noOfBrowsers) {
         maxConcurrency: noOfBrowsers,
         puppeteerOptions: {
             timeout: 50_000,
-            headless: false,
+            headless: true,
             defaultViewport: false,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
@@ -63,13 +63,13 @@ async function init(noOfBrowsers) {
 
             const startTime = new Date();
             const maxRetries = 1;
-
+            // ticker.status = 0
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
                     await runIndicator(page, ticker.ticker, ticker.status, client);
-                    const filePaths = findFilesByTicker(ticker.ticker, './csv')
-                    const mostRecentFile = getMostRecentFile(filePaths, './csv')
-                    mostRecentFile && await processCSV(path.join(__dirname, '../csv', mostRecentFile), ticker)
+                    //const filePaths = findFilesByTicker(ticker.ticker, './csv')
+                    //const mostRecentFile = getMostRecentFile(filePaths, './csv')
+                    //mostRecentFile && await processCSV(path.join(__dirname, '../csv', mostRecentFile), ticker)
                     if (ticker.status == 0) {
                         ticker.status == 0 && await updateItem(ticker.ticker, 5)
                     }
