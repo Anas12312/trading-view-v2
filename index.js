@@ -18,46 +18,12 @@ async function main() {
     // const tickers = await getAllTickers()
     console.log((path.join(__dirname, 'csv')))
     const tickers = dbtickers
+    if(!tickers || !tickers.length) return;
     const cpuCount = os.cpus().length;
     console.log(cpuCount)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 3
-    const noOfTickersPerChunks = 15
-    // const tickers = [
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    //     {
-    //         ticker: 'AAPL',
-    //         status: 0
-    //     },
-    // ]
-    // const queues = spreadTasks(tickers, tickers.length / noOfTickersPerChunks)
+    const noOfBrowsers = 1
+
     const queues = spreadTasks(tickers, noOfBrowsers)
     // console.log(queues)
     console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")
@@ -71,7 +37,7 @@ async function main() {
 
     queues.forEach((queue) => {
         cluster.queue({
-            tickers: queue,
+            tickers: [queue],
             startTime
         })
     })

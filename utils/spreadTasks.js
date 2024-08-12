@@ -18,6 +18,7 @@ function spreadTasks(tickers, noBrowsers) {
     //         })
     //     }
     // }
+    return tickers
     return queues
 }
 module.exports = spreadTasks

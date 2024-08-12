@@ -3,6 +3,8 @@ const runIndicator = require('./task');
 const fs = require('fs');
 const chalk = require('chalk');
 const path = require('path');
+const { getMostRecentFile, findFilesByTicker } = require('../utils/extractTickerName');
+const { processCSV, updateItem } = require('../csv');
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -14,7 +16,7 @@ async function init(noOfBrowsers) {
         maxConcurrency: noOfBrowsers,
         puppeteerOptions: {
             timeout: 50_000,
-            headless: true,
+            headless: false,
             defaultViewport: false,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
@@ -36,13 +38,12 @@ async function init(noOfBrowsers) {
                 behavior: "allow",
                 downloadPath: path.resolve(path.join(__dirname, '../csv')),
             });
-
             console.log(chalk.green("[NAVIGATING TO TRADINGVIEW CHART]"));
             await page.goto("https://www.tradingview.com/chart/", {
                 waitUntil: "load",
                 timeout: 0,
             });
-            await processTickers(tickers, page, 0)
+            await processTickers(tickers, page, 0, client)
             await delay(1000);
             await page.close()
         } catch (err) {
@@ -51,9 +52,7 @@ async function init(noOfBrowsers) {
             throw err;
         }
     };
-    async function processTickers(tickers, page, trialNumber) {
-        let failedTickers = []
-        if (!tickers.length || (trialNumber > 2)) return
+    async function processTickers(tickers, page, client) {
         for (const ticker of tickers) {
             if (!ticker.ticker) continue
             console.log(chalk.green("[RUNNING TICKER]: ") + chalk.blue(ticker.ticker))
@@ -63,12 +62,17 @@ async function init(noOfBrowsers) {
 
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
-                    await runIndicator(page, ticker.ticker, ticker.status);
+                    await runIndicator(page, ticker.ticker, ticker.status, client);
+                    const filePaths = findFilesByTicker(ticker.ticker, './csv')
+                    const mostRecentFile = getMostRecentFile(filePaths, './csv')
+                    mostRecentFile && await processCSV(path.join(__dirname, '../csv', mostRecentFile), ticker)
+                    if (ticker.status == 0) {
+                        ticker.status == 0 && await updateItem(ticker.ticker, 5)
+                    }
                     break; // Exit loop if successful
                 } catch (err) {
                     if (attempt === maxRetries) {
                         console.error(`Failed after ${maxRetries} for ticker: ${ticker.ticker} attempts: ${err.message}`);
-                        failedTickers.push(ticker)
                     } else {
                         console.log(`Retrying (${attempt}/${maxRetries}) for ${ticker.ticker}...`);
 
@@ -79,8 +83,6 @@ async function init(noOfBrowsers) {
             const endTime = new Date();
             console.log(chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((endTime - startTime) / 1000) + " sec");
         }
-
-        failedTickers.length && await processTickers(failedTickers, page, trialNumber + 1)
 
     }
     await cluster.task(processStock);

@@ -4,6 +4,7 @@ const { timeout } = require('puppeteer');
 const config = require('../config');
 const chalk = require('chalk');
 const { findFilesByTicker } = require('../utils/extractTickerName');
+const path = require('path')
 dotenv.config();
 
 function delay(time) {
@@ -13,34 +14,35 @@ function delay(time) {
 }
 
 
-const runIndcator = async (page, ticker, mode) => {
+const runIndcator = async (page, ticker, mode, client) => {
     // Change Ticker Name
 
     async function changeTicker(stockName) {
         console.log(page.isClosed())
         try {
             await page.waitForSelector('#header-toolbar-symbol-search', {
-                timeout: 1000
+                timeout: 10000
             })
             await page.click('#header-toolbar-symbol-search', {
                 delay: 10
             })
             console.log("clicked on search")
-            await page.waitForSelector('[data-name="symbol-search-items-dialog"] input',{
-                timeout: 1000
+            await page.waitForSelector('[data-name="symbol-search-items-dialog"] input', {
+                timeout: 10000
             })
             await page.type('[data-name="symbol-search-items-dialog"] input', stockName, {
-                delay: 10
+                delay: 25
             })
+            await delay(1000)
             await page.waitForSelector('#stocks', {
-                timeout: 1000
+                timeout: 10000
             })
             await page.click('#stocks', {
                 delay: 10
             })
             // await delay(1000)
-            await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo',{
-                timeout: 1000
+            await page.waitForSelector('.scrollContainer-dlewR1s1 .listContainer-dlewR1s1 .itemRow-oRSs8UQo', {
+                timeout: 10000
             })
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)', {
                 delay: 10
@@ -49,7 +51,7 @@ const runIndcator = async (page, ticker, mode) => {
         } catch (e) {
             console.log(chalk.red(stockName))
             // console.log(e)
-            throw(e)
+            throw (e)
             // return await changeTicker(stockName)
         }
     }
@@ -76,37 +78,46 @@ const runIndcator = async (page, ticker, mode) => {
 
 
     // create alert
-    async function createAlert(charts, index, page) {
-        try {
-            const indcatorLegend = charts.at(index);
-            await indcatorLegend?.click();
-            await delay(50)
-            await page.keyboard.down('Alt')
-            await page.keyboard.down('A')
+    async function createAlert(charts, index, page, indicator) {
+        const maxRetries = 3;
 
-            await page.keyboard.up('Alt')
-            await page.keyboard.up('A')
-            const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
-                timeout: 1000
-            });
-            await createAlertBtn.click({
-                delay: 50
-            });
-            console.log("alert created")
-        } catch (e) {
-            console.log(e)
-            console.log("failed to create alert, trying again...")
-            await delay(50)
-            await createAlert(charts, index, page)
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const indcatorLegend = charts.at(index);
+                await indcatorLegend?.click();
+                await delay(150)
+                await page.keyboard.down('Alt')
+                await page.keyboard.down('A')
+
+                await page.keyboard.up('Alt')
+                await page.keyboard.up('A')
+                const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
+                    timeout: 5000
+                });
+                await createAlertBtn.click({
+                    delay: 50
+                });
+                console.log("alert created")
+                break; // Exit loop if successful
+            } catch (err) {
+                if (attempt === maxRetries) {
+                    console.error(`Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
+                } else {
+                    console.log(`Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
+                }
+            }
         }
     }
     // More Action Button
     async function addingAlerts(page) {
         await page.waitForSelector("[data-name='legend-source-title']");
         const charts = await page.$$("[data-name='legend-source-title']")
+        await delay(1000)
         for (let i in charts) {
             if (i == 0) continue
-            await createAlert(charts, i, page)
+            const text = await charts[i].evaluate(t => t.innerText)
+            console.log("trying to add alert " + text)
+            await createAlert(charts, i, page, text)
             await delay(500)
         }
     }
@@ -119,6 +130,38 @@ const runIndcator = async (page, ticker, mode) => {
             delay: 500
         })
         await page.keyboard.up('Control')
+    }
+    async function setTheIntervalTo1Minute(page) {
+        await page.waitForSelector('#header-toolbar-intervals button', {
+            timeout: 5000
+        })
+        await page.click('#header-toolbar-intervals button', {
+            delay: 50
+        })
+        await page.waitForSelector('[data-name="menu-inner"] > div [data-role="menuitem"]', {
+            timeout: 5000
+        })
+        const intervals = await page.$$('[data-name="menu-inner"] > div [data-role="menuitem"]')
+        const oneMinute = intervals.at(13)
+        await oneMinute.click({
+            delay: 50
+        })
+    }
+    async function setTheIntervalTo1Day(page) {
+        await page.waitForSelector('#header-toolbar-intervals button', {
+            timeout: 5000
+        })
+        await page.click('#header-toolbar-intervals button', {
+            delay: 50
+        })
+        await page.waitForSelector('[data-name="menu-inner"] > div [data-role="menuitem"]', {
+            timeout: 5000
+        })
+        const intervals = await page.$$('[data-name="menu-inner"] > div [data-role="menuitem"]')
+        const oneMinute = intervals.at(27)
+        await oneMinute.click({
+            delay: 50
+        })
     }
     async function downloadCSV(page) {
         try {
@@ -163,21 +206,38 @@ const runIndcator = async (page, ticker, mode) => {
         } catch (e) {
             // console.log("failed to save CSV, trying again...")
             // console.log(e)
-            throw(e)
+            throw (e)
             // await downloadCSV(page)
         }
     }
 
     console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
-    mode = 2
     if (mode == 0) {
         await changeTicker(ticker, page)
-        await addingAlerts(page)
+        await delay(1000)
+        // await addingAlerts(page)
+        await delay(1000)
+        const client = await page.createCDPSession();
+        await client.send("Page.setDownloadBehavior", {
+            behavior: "allow",
+            downloadPath: path.resolve(path.join(__dirname, '../csv_1minute')),
+        });
+        await setTheIntervalTo1Minute(page)
+        await delay(5000)
         await downloadCSV(page)
-        console.log("Downloading the csv file...")
-        while (1) {
-            if (findFilesByTicker(ticker, './csv').length) break
-        }
+        await delay(500)
+        await client.send("Page.setDownloadBehavior", {
+            behavior: "allow",
+            downloadPath: path.resolve(path.join(__dirname, '../csv_1day')),
+        });
+        await setTheIntervalTo1Day(page)
+        await delay(500)
+        await downloadCSV(page)
+        await delay(3000)
+        // let tries = 5
+        // while (tries--) {
+        //     if (findFilesByTicker(ticker, './csv').length) break
+        // }
         console.log("CSV file downloaded")
     } else if (mode == 1 || mode == 2) {
         await changeTicker(ticker, page)
