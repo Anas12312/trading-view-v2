@@ -9,16 +9,16 @@ module.exports = [
       "bullish_plus_bartime": "2024-08-05T09:43:00-04:00",
       "status": 0
     },
-    {
-      "ticker": "IXHL",
-      "bearish_bartime": "2024-01-01 04:00:00",
-      "bearish_exit_bartime": "2024-01-01 04:00:00",
-      "bearish_plus_bartime": "2024-01-01 04:00:00",
-      "bullish_bartime": "2024-01-01 04:00:00",
-      "bullish_exit_bartime": "2024-01-01 04:00:00",
-      "bullish_plus_bartime": "2024-01-01 04:00:00",
-      "status": 0
-    },
+    // {
+    //   "ticker": "IXHL",
+    //   "bearish_bartime": "2024-01-01 04:00:00",
+    //   "bearish_exit_bartime": "2024-01-01 04:00:00",
+    //   "bearish_plus_bartime": "2024-01-01 04:00:00",
+    //   "bullish_bartime": "2024-01-01 04:00:00",
+    //   "bullish_exit_bartime": "2024-01-01 04:00:00",
+    //   "bullish_plus_bartime": "2024-01-01 04:00:00",
+    //   "status": 0
+    // },
     // {
     //   "ticker": "IXHL",
     //   "bearish_bartime": "2024-01-01 04:00:00",

@@ -15,9 +15,9 @@ async function main() {
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
-    const tickers = await getAllTickers()
+    // const tickers = await getAllTickers()
     console.log((path.join(__dirname, 'csv')))
-    // const tickers = dbtickers
+    const tickers = dbtickers
     if(!tickers || !tickers.length) return;
     const cpuCount = os.cpus().length;
     console.log(tickers.length)

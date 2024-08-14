@@ -32,7 +32,8 @@ async function getAllTickers(status) {
         return tickers;
     } catch (error) {
         console.error('Error scanning table:', error);
-        throw error;
+        // throw error;
+        return []
     }
 
 }

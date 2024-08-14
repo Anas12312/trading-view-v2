@@ -147,7 +147,7 @@ const runIndcator = async (page, ticker, mode, client) => {
                     timeout: 5000
                 })
                 await alertName.type('luxalgo_trend-up', { // SF: Alert name
-                    delay: 20
+                    delay: 50
                 })
                 const textArea = await page.waitForSelector('#alert-message', {
                     timeout: 5000
@@ -162,7 +162,7 @@ const runIndcator = async (page, ticker, mode, client) => {
                 await delay(300)
                 await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-up}}', { // SF: JSON format of alert messages
                     
-                    delay: 20
+                    delay: 50
                 })
 
                 //await textArea.type(`ticker=${ticker}\ntime=${time}\nalert=${alertUp}`, {
@@ -225,7 +225,7 @@ const runIndcator = async (page, ticker, mode, client) => {
                     timeout: 5000
                 })
                 await alertName.type('luxalgo_trend-down', { // SF: Alert name
-                    delay: 20
+                    delay: 50
                 })
                 const textArea = await page.waitForSelector('#alert-message', {
                     timeout: 5000
@@ -239,7 +239,7 @@ const runIndcator = async (page, ticker, mode, client) => {
                 // await textArea.type(String.fromCharCode(8))
                 await delay(300)
                 await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-down}}', { // SF: alert json message
-                    delay: 20
+                    delay: 50
                 })
                 const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
                     timeout: 5000
@@ -391,19 +391,33 @@ const runIndcator = async (page, ticker, mode, client) => {
             behavior: "allow",
             downloadPath: path.resolve(path.join(__dirname, '../csv_1minute')),
         });
+        await delay(1000)
+        await client.send("Page.setDownloadBehavior", {
+            behavior: "allow",
+            downloadPath: path.resolve(path.join(__dirname, '../csv_1minute')),
+        });
         await zoomOut(page)
         await setTheIntervalTo1Minute(page)
-        await delay(5000)
+        await delay(1000)
+        await setTheIntervalTo1Minute(page)
+        await delay(1000)
         await downloadCSV(page)
-        await delay(500)
+        await delay(1000)
+        await client.send("Page.setDownloadBehavior", {
+            behavior: "allow",
+            downloadPath: path.resolve(path.join(__dirname, '../csv_1day')),
+        });
+        await delay(1000)
         await client.send("Page.setDownloadBehavior", {
             behavior: "allow",
             downloadPath: path.resolve(path.join(__dirname, '../csv_1day')),
         });
         await setTheIntervalTo1Day(page)
-        await delay(500)
+        await delay(1000)
+        await setTheIntervalTo1Day(page)
+        await delay(1000)
         await downloadCSV(page)
-        await delay(3000)
+        await delay(5000)
         // let tries = 5
         // while (tries--) {
         //     if (findFilesByTicker(ticker, './csv').length) break
