@@ -15,7 +15,7 @@ async function update(params) {
 async function getAllTickers(status) {
     const params = {
         TableName: getTableName(),
-        // TableName: 'tvtable_20240805',
+        //TableName: 'tvtable_20240812',
         FilterExpression: '#status IN (:statusValue0, :statusValue1)',
         ExpressionAttributeNames: {
             '#status': 'status'

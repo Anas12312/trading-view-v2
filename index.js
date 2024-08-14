@@ -22,7 +22,7 @@ async function main() {
     const cpuCount = os.cpus().length;
     console.log(tickers.length)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 2
+    const noOfBrowsers = 4
     const queues = spreadTasks(tickers, noOfBrowsers)
     console.log(queues)
     // console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")

@@ -161,8 +161,14 @@ const runIndcator = async (page, ticker, mode, client) => {
                 // await textArea.type(String.fromCharCode(8))
                 await delay(300)
                 await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-up}}', { // SF: JSON format of alert messages
+                    
                     delay: 20
                 })
+
+                //await textArea.type(`ticker=${ticker}\ntime=${time}\nalert=${alertUp}`, {
+                //     delay: 20
+                //})
+
                 const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
                     timeout: 5000
                 });
