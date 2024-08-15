@@ -15,14 +15,14 @@ async function main() {
     // 0- Add all missing indicators
     // await addAllIndicators(false)
     // 1- Get all tickers along with mode from dynamoDB
-    // const tickers = await getAllTickers()
+    const tickers = await getAllTickers()
     console.log((path.join(__dirname, 'csv')))
-    const tickers = dbtickers
+    // const tickers = dbtickers
     if(!tickers || !tickers.length) return;
     const cpuCount = os.cpus().length;
     console.log(tickers.length)
     // const noOfBrowsers = Math.floor(cpuCount * 0.6)
-    const noOfBrowsers = 4
+    const noOfBrowsers = 1
     const queues = spreadTasks(tickers, noOfBrowsers)
     console.log(queues)
     // console.log(chalk.green("[NUMBER OF TICKERS]: ") + chalk.blue(tickers.length) + "\tUSING " + chalk.yellow(noOfBrowsers) + " CORES")

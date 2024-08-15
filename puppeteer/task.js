@@ -310,8 +310,7 @@ const runIndcator = async (page, ticker, mode, client) => {
         await page.waitForSelector('[data-name="menu-inner"] > div [data-role="menuitem"]', {
             timeout: 5000
         })
-        const intervals = await page.$$('[data-name="menu-inner"] > div [data-role="menuitem"]')
-        const oneMinute = intervals.at(13)
+        const oneMinute = await page.$('[data-value="1"]')
         await oneMinute.click({
             delay: 50
         })
@@ -326,9 +325,8 @@ const runIndcator = async (page, ticker, mode, client) => {
         await page.waitForSelector('[data-name="menu-inner"] > div [data-role="menuitem"]', {
             timeout: 5000
         })
-        const intervals = await page.$$('[data-name="menu-inner"] > div [data-role="menuitem"]')
-        const oneMinute = intervals.at(27)
-        await oneMinute.click({
+        const oneDay = await page.$('[data-value="1D"]')
+        await oneDay.click({
             delay: 50
         })
     }
