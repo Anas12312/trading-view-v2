@@ -4,7 +4,8 @@ const { timeout } = require('puppeteer');
 const config = require('../config');
 const chalk = require('chalk');
 const { findFilesByTicker } = require('../utils/extractTickerName');
-const path = require('path')
+const path = require('path');
+const getTime = require('../utils/getTime');
 dotenv.config();
 
 function delay(time) {
@@ -26,7 +27,7 @@ const runIndcator = async (page, ticker, mode, client) => {
             await page.click('#header-toolbar-symbol-search', {
                 delay: 10
             })
-            console.log("clicked on search")
+            console.log(getTime() + "clicked on search")
             await page.waitForSelector('[data-name="symbol-search-items-dialog"] input', {
                 timeout: 10000
             })
@@ -47,9 +48,9 @@ const runIndcator = async (page, ticker, mode, client) => {
             await page.click('.itemRow-oRSs8UQo div:nth-child(1)', {
                 delay: 10
             })
-            console.log("changed ticker name")
+            console.log(getTime() + "changed ticker name")
         } catch (e) {
-            console.log(chalk.red(stockName))
+            console.log(getTime() + chalk.red(stockName))
             // console.log(e)
             throw (e)
             // return await changeTicker(stockName)
@@ -71,7 +72,7 @@ const runIndcator = async (page, ticker, mode, client) => {
             console.log("saved")
         } catch (e) {
             await delay(200)
-            console.log("failed to save, trying again...")
+            console.log(getTime() + "failed to save, trying again...")
             await save(page)
         }
     }
@@ -97,13 +98,13 @@ const runIndcator = async (page, ticker, mode, client) => {
                 await createAlertBtn.click({
                     delay: 50
                 });
-                console.log("alert created")
+                console.log(getTime() + "alert created" + "ticker: " + ticker)
                 break; // Exit loop if successful
             } catch (err) {
                 if (attempt === maxRetries) {
-                    console.error(`Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
+                    console.error(getTime() + `Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
                 } else {
-                    console.log(`Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
+                    console.log(getTime() + `Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
                 }
             }
         }
@@ -160,7 +161,7 @@ const runIndcator = async (page, ticker, mode, client) => {
                 await page.keyboard.up('Control')
                 // await textArea.type(String.fromCharCode(8))
                 await delay(300)
-                await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-up}}', { // SF: JSON format of alert messages
+                await textArea.type('ticker={{ticker}}\ntime={{time}}\nhigh={{high}}\nlow={{low}}\nalert={{alert-down}}', { // SF: JSON format of alert messages
                     
                     delay: 50
                 })
@@ -175,13 +176,13 @@ const runIndcator = async (page, ticker, mode, client) => {
                 await createAlertBtn.click({
                     delay: 50
                 });
-                console.log("alert created")
+                console.log(getTime() + "alert created" + "ticker: " + ticker)
                 break; // Exit loop if successful
             } catch (err) {
                 if (attempt === maxRetries) {
-                    console.error(`Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
+                    console.error(getTime() + `Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
                 } else {
-                    console.log(`Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
+                    console.log(getTime() + `Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
                 }
             }
         }
@@ -238,7 +239,7 @@ const runIndcator = async (page, ticker, mode, client) => {
                 await page.keyboard.up('Control')
                 // await textArea.type(String.fromCharCode(8))
                 await delay(300)
-                await textArea.type('ticker={{ticker}}\ntime={{time}}\nalert={{alert-down}}', { // SF: alert json message
+                await textArea.type('ticker={{ticker}}\ntime={{time}}\nhigh={{high}}\nlow={{low}}\nalert={{alert-down}}', { // SF: alert json message
                     delay: 50
                 })
                 const createAlertBtn = await page.waitForSelector('button[data-name="submit"]', {
@@ -247,13 +248,13 @@ const runIndcator = async (page, ticker, mode, client) => {
                 await createAlertBtn.click({
                     delay: 50
                 });
-                console.log("alert created")
+                console.log(getTime() + "alert created" + "ticker: " + ticker)
                 break; // Exit loop if successful
             } catch (err) {
                 if (attempt === maxRetries) {
-                    console.error(`Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
+                    console.error(getTime() + `Failed after ${maxRetries} to create an alert for indicator: ${indicator} attempts: ${err.message}`);
                 } else {
-                    console.log(`Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
+                    console.log(getTime() + `Retrying (${attempt}/${maxRetries}) for ${indicator}...`);
                 }
             }
         }
@@ -267,22 +268,22 @@ const runIndcator = async (page, ticker, mode, client) => {
             if (i == 0) continue
             if (i == 1) {
                 const text = await charts[i].evaluate(t => t.innerText)
-                console.log("trying to add alert " + text)
+                console.log(getTime() + "trying to add alert " + text + "ticker: " + ticker)
                 await createAlert(charts, i, page, text)
                 await delay(2000)
-                console.log("trying to add down alert " + text)
+                console.log(getTime() + "trying to add down alert " + text + "ticker: " + ticker)
                 await createDownAlert(charts, i, page, text)
                 await delay(500)
             }
             if (i == 2) {
                 const text = await charts[i].evaluate(t => t.innerText)
-                console.log("trying to add up alert " + text)
+                console.log(getTime() + "trying to add up alert " + text + "ticker: " + ticker)
                 await createUpAlert(charts, i, page, text)
                 await delay(500)
             }
             if (i == 3) {
                 const text = await charts[i].evaluate(t => t.innerText)
-                console.log("trying to add alert " + text)
+                console.log(getTime() + "trying to add alert " + text + "ticker: " + ticker)
                 await createAlert(charts, i, page, text)
                 await delay(500)
             }
@@ -291,7 +292,8 @@ const runIndcator = async (page, ticker, mode, client) => {
 
 
     async function zoomOut(page) {
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 100; i++) {
+            await delay(50)
             await page.keyboard.down('Control')
             await page.keyboard.down('ArrowDown')
             await page.keyboard.up('ArrowDown', {
@@ -341,16 +343,16 @@ const runIndcator = async (page, ticker, mode, client) => {
                 count: 1
             })
             // await delay(1000) // SF: to remvoe the delay
-            console.log("clicked on the dropdown button")
+            console.log(getTime() + "clicked on the dropdown button")
             await page.waitForSelector('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
                 timeout: 1000
             })
-            console.log("found the button")
+            console.log(getTime() + "found the button")
             await page.click('[data-name="menu-inner"] [data-role="menuitem"]:nth-child(6)', {
                 delay: 20
             })
             // await delay(1000) // SF: to remvoe the delay
-            console.log("clicked on the menu button")
+            console.log(getTime() + "clicked on the menu button")
             await page.waitForSelector("#time-format-select", {
                 timeout: 1000
             })
@@ -365,11 +367,11 @@ const runIndcator = async (page, ticker, mode, client) => {
                 delay: 20
             })
             // await delay(1000) // SF: to remvoe the delay
-            console.log("changed time format")
+            console.log(getTime() + "changed time format")
             await page.click("[data-name='submit-button']", {
                 delay: 20
             })
-            console.log("submitted the downloadCSV dialog")
+            console.log(getTime() + "submitted the downloadCSV dialog")
         } catch (e) {
             // console.log("failed to save CSV, trying again...")
             // console.log(e)
@@ -378,7 +380,7 @@ const runIndcator = async (page, ticker, mode, client) => {
         }
     }
 
-    console.log(chalk.cyan("[SCRIPT MODE]: " + mode))
+    console.log(getTime() + chalk.cyan("[SCRIPT MODE]: " + mode))
     if (mode == 0) {
         await changeTicker(ticker, page)
         await delay(1000)
@@ -420,7 +422,7 @@ const runIndcator = async (page, ticker, mode, client) => {
         // while (tries--) {
         //     if (findFilesByTicker(ticker, './csv').length) break
         // }
-        console.log("CSV file downloaded")
+        console.log(getTime() + "CSV file downloaded")
     } else if (mode == 1 || mode == 2) {
         await changeTicker(ticker, page)
         // await zoomOut(page)
@@ -433,7 +435,7 @@ const runIndcator = async (page, ticker, mode, client) => {
         //     await delay(300)
         //     tries++
         // }
-        console.log("CSV file downloaded")
+        console.log(getTime() + "CSV file downloaded")
         await delay(1000)
         // await save(page)
     }

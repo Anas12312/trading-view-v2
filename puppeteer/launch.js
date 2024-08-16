@@ -5,6 +5,7 @@ const chalk = require('chalk');
 const path = require('path');
 const { getMostRecentFile, findFilesByTicker } = require('../utils/extractTickerName');
 const { processCSV, updateItem } = require('../csv');
+const getTime = require('../utils/getTime');
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -16,7 +17,7 @@ async function init(noOfBrowsers) {
         maxConcurrency: noOfBrowsers,
         puppeteerOptions: {
             timeout: 50_000,
-            headless: false,
+            headless: true,
             defaultViewport: false,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         },
@@ -38,7 +39,7 @@ async function init(noOfBrowsers) {
                 behavior: "allow",
                 downloadPath: path.resolve(path.join(__dirname, '../csv')),
             });
-            console.log(chalk.green("[NAVIGATING TO TRADINGVIEW CHART]"));
+            console.log(getTime() + chalk.green("[NAVIGATING TO TRADINGVIEW CHART]"));
             await page.goto("https://www.tradingview.com/chart/", {
                 waitUntil: "load",
                 timeout: 0,
@@ -51,7 +52,7 @@ async function init(noOfBrowsers) {
             // console.log((after - data.startTime) / 1000)
             await page.close()
         } catch (err) {
-            console.error(`Error processing tickers: ${err.message}`);
+            console.error(getTime() + `Error processing tickers: ${err.message}`);
             await page.close(); // Close page to release resources
             throw err;
         }
@@ -59,7 +60,7 @@ async function init(noOfBrowsers) {
     async function processTickers(tickers, page, client) {
         for (const ticker of tickers) {
             if (!ticker.ticker) continue
-            console.log(chalk.green("[RUNNING TICKER]: ") + chalk.blue(ticker.ticker))
+            console.log(getTime() + chalk.green("[RUNNING TICKER]: ") + chalk.blue(ticker.ticker))
 
             const startTime = new Date();
             const maxRetries = 1;
@@ -76,22 +77,22 @@ async function init(noOfBrowsers) {
                     break; // Exit loop if successful
                 } catch (err) {
                     if (attempt === maxRetries) {
-                        console.error(`Failed after ${maxRetries} for ticker: ${ticker.ticker} attempts: ${err.message}`);
+                        console.error(getTime() + `Failed after ${maxRetries} for ticker: ${ticker.ticker} attempts: ${err.message}`);
                     } else {
-                        console.log(`Retrying (${attempt}/${maxRetries}) for ${ticker.ticker}...`);
+                        console.log(getTime() + `Retrying (${attempt}/${maxRetries}) for ${ticker.ticker}...`);
 
                         // await page.reload({ waitUntil: ["domcontentloaded"] });
                     }
                 }
             }
             const endTime = new Date();
-            console.log(chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((endTime - startTime) / 1000) + " sec");
+            console.log(getTime() + chalk.green("[CHANGED TICKER]: ") + chalk.blue(ticker.ticker) + "\tIN " + chalk.red((endTime - startTime) / 1000) + " sec");
         }
 
     }
     await cluster.task(processStock);
     cluster.on('taskerror', (err, data) => {
-        console.error(`Error processing tickers: ${err.message}`);
+        console.error(getTime() + `Error processing tickers: ${err.message}`);
     });
 
     return cluster;
